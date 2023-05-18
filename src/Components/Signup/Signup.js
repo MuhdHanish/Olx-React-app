@@ -16,7 +16,8 @@ export default function Signup() {
     name: "",
     email: "",
     phone: "",
-    password: ""
+    password: "",
+    returnSecureToken: true
   })
 
   const HandleSubmit = (e) => {

@@ -2,13 +2,37 @@ import React from 'react';
 
 import Logo from '../../olx-logo.png';
 import './Login.css';
+import {HandelState} from '../../useForm'
+import { useNavigate } from 'react-router-dom';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 function Login() {
+  const navigate = useNavigate()
+  const [state,setState] = HandelState({
+    email:"",
+    password:"",
+    returnSecureToken: true
+  })
+
+  const HandleSubmit = (e) =>{
+    e.preventDefault()
+    try{
+     const auth = getAuth()
+     signInWithEmailAndPassword(auth,state.email,state.password).then((userData)=>{
+      navigate('/')
+     }).catch((err)=>{
+          console.log(err.code);
+     })
+    }catch(err){
+      console.log(err)
+    }
+  }
+
   return (
     <div>
       <div className="loginParentDiv">
         <img width="200px" height="200px" src={Logo} alt='logo'></img>
-        <form>
+        <form onSubmit={HandleSubmit}>
           <label htmlFor="fname">Email</label>
           <br />
           <input
@@ -16,6 +40,8 @@ function Login() {
             type="email"
             id="fname"
             name="email"
+            value={state.email}
+            onChange={setState}
             defaultValue="John"
           />
           <br />
@@ -25,12 +51,14 @@ function Login() {
             className="input"
             type="password"
             id="lname"
+            value={state.password}
+            onChange={setState}
             name="password"
             defaultValue="Doe"
           />
           <br />
           <br />
-          <button>Login</button>
+          <button type='submit'>Login</button>
         </form>
         <a href>Signup</a>
       </div>
