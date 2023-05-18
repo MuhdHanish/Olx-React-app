@@ -1,24 +1,42 @@
-import React, { Fragment ,useState} from 'react';
+import React, { Fragment ,useContext,useState} from 'react';
 import './Create.css';
 import Header from '../Header/Header';
 import {HandelState} from '../../useForm'
+import {AuthContext,FirebaseContext} from '../../store/Context'
+import {ref,getStorage,uploadBytes,getDownloadURL} from 'firebase/storage'
 
 const Create = () => {
 
+  const {db} = useContext(FirebaseContext)
+  const {user} = useContext(AuthContext)
+  
   const [state,setState] = HandelState({
     name:'',
     category:'',
     price:''
   })
 
+  const storage = getStorage()
+
   const[image,setImage] = useState(null)
-  console.log(state)
+  
+  const HandleSubmit = ()=>{
+    if(image){
+      const storageRef = ref(storage,`/image/${image.name}`)
+      uploadBytes(storageRef,image).then((result)=>{
+        getDownloadURL(result.ref).then((url)=>{
+          console.log(url)
+        })
+      })
+    }
+  }
+
   return (
     <Fragment>
       <Header />
       <card>
         <div className="centerDiv">
-          <form>
+ 
             <label htmlFor="fname">Name</label>
             <br />
             <input
@@ -48,17 +66,17 @@ const Create = () => {
             <input className="input" type="number" value={state.price}
               onChange={setState} id="fname" name="price" />
             <br />
-          </form>
+
           <br />
           <img  alt="Posts" width="200px" height="200px" src={image?URL.createObjectURL(image):''}></img>
-          <form>
+  
             <br />
             <input onChange={(event)=>{
              setImage(event.target.files[0])
             }} type="file" />
             <br />
-            <button className="uploadBtn">upload and Submit</button>
-          </form>
+            <button onClick={HandleSubmit} className="uploadBtn">upload and Submit</button>
+
         </div>
       </card>
     </Fragment>
