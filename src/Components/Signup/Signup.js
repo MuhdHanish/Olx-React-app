@@ -2,12 +2,21 @@ import React from 'react';
 
 import Logo from '../../olx-logo.png';
 import './Signup.css';
+import { useForm } from '../../useForm';
 
 export default function Signup() {
+
+  const [state,setState] = useForm({
+    name:"",
+    email:"",
+    phone:"",
+    password:""
+  })
+
   return (
     <div>
       <div className="signupParentDiv">
-        <img width="200px" height="200px" src={Logo}></img>
+        <img width="200px" height="200px" src={Logo} alt='logo'></img>
         <form>
           <label htmlFor="fname">Username</label>
           <br />
@@ -16,6 +25,8 @@ export default function Signup() {
             type="text"
             id="fname"
             name="name"
+            value={state.name}
+            onChange={setState}
             defaultValue="John"
           />
           <br />
@@ -26,6 +37,8 @@ export default function Signup() {
             type="email"
             id="fname"
             name="email"
+            value={state.email}
+            onChange={setState}
             defaultValue="John"
           />
           <br />
@@ -36,6 +49,8 @@ export default function Signup() {
             type="number"
             id="lname"
             name="phone"
+            value={state.phone}
+            onChange={setState}
             defaultValue="Doe"
           />
           <br />
@@ -46,13 +61,15 @@ export default function Signup() {
             type="password"
             id="lname"
             name="password"
+            value={state.password}
+            onChange={setState}
             defaultValue="Doe"
           />
           <br />
           <br />
           <button>Signup</button>
         </form>
-        <a>Login</a>
+        <a href>Login</a>
       </div>
     </div>
   );
