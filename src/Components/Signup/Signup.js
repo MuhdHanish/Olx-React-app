@@ -2,22 +2,22 @@ import React from 'react';
 
 import Logo from '../../olx-logo.png';
 import './Signup.css';
-import { useForm } from '../../useForm';
+import { HandelState,HandleSubmit } from '../../useForm';
 
 export default function Signup() {
 
-  const [state,setState] = useForm({
+  const [state,setState] = HandelState({
     name:"",
     email:"",
     phone:"",
     password:""
   })
-
+  
   return (
     <div>
       <div className="signupParentDiv">
         <img width="200px" height="200px" src={Logo} alt='logo'></img>
-        <form>
+        <form onSubmit={(event)=>HandleSubmit(event,state)}>
           <label htmlFor="fname">Username</label>
           <br />
           <input
@@ -67,7 +67,7 @@ export default function Signup() {
           />
           <br />
           <br />
-          <button>Signup</button>
+          <button type='submit'>Signup</button>
         </form>
         <a href>Login</a>
       </div>
