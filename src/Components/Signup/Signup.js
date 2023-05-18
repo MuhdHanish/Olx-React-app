@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Logo from '../../olx-logo.png';
 import './Signup.css';
 import { HandelState } from '../../useForm';
-import { FirebaseContext } from '../../store/firebaseContext'
+import { FirebaseContext } from '../../store/Context'
 import { getAuth, createUserWithEmailAndPassword,updateProfile } from "firebase/auth";
 import { addDoc , collection } from 'firebase/firestore'
 
