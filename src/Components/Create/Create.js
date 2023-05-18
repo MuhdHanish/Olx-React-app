@@ -3,8 +3,9 @@ import './Create.css';
 import Header from '../Header/Header';
 import {HandelState} from '../../useForm'
 import {AuthContext,FirebaseContext} from '../../store/Context'
+import { useNavigate } from 'react-router-dom';
 import {ref,getStorage,uploadBytes,getDownloadURL} from 'firebase/storage'
-
+import {collection, addDoc} from 'firebase/firestore'
 const Create = () => {
 
   const {db} = useContext(FirebaseContext)
@@ -16,19 +17,35 @@ const Create = () => {
     price:''
   })
 
+  const navigate = useNavigate()
+
   const storage = getStorage()
 
   const[image,setImage] = useState(null)
   
+  const newDate = new Date()
+
   const HandleSubmit = ()=>{
     if(image){
       const storageRef = ref(storage,`/image/${image.name}`)
       uploadBytes(storageRef,image).then((result)=>{
         getDownloadURL(result.ref).then((url)=>{
-          console.log(url)
+          addDoc(collection(db,'products'),{
+            name:state.name,
+            category:state.category,
+            price:state.price,
+            url:url,
+            userId:user.uid,
+            createdAt : newDate.toDateString()
+          }).then(()=>{
+            navigate('/')
+          }).catch((err)=>{
+            console.log(err)
+          })
         })
       })
     }
+
   }
 
   return (
