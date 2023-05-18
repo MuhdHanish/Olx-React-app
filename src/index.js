@@ -7,7 +7,7 @@ import db from './firebase/config';
 
 ReactDOM.render(
  <React.StrictMode>
-  <FirebaseContext.Provider value={db}>
+  <FirebaseContext.Provider value={{db}}>
   <Router>
    <App />
   </Router>

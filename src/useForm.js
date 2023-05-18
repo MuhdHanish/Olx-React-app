@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState} from "react"
 
 // const name = /^[a-zA-Z\s]+$/;
 // const email = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -17,7 +17,3 @@ export const HandelState = (intialState) => {
  return [state, handleInput]
 }
 
-export const HandleSubmit = (event, state) => {
- event.preventDefault()
- console.log(state)
-}
