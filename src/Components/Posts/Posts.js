@@ -1,9 +1,34 @@
-import React from 'react';
-
+import React, { useEffect, useContext, useState } from 'react';
+import {useNavigate} from 'react-router-dom'
 import Heart from '../../assets/Heart';
 import './Post.css';
+import { FirebaseContext } from '../../store/Context';
+import { collection, getDocs} from 'firebase/firestore';
+import { PostContext } from '../../store/PostContext';
+
 
 function Posts() {
+
+  const navigate = useNavigate()
+
+  const { db } = useContext(FirebaseContext)
+  const [products, setProducts] = useState([])
+  const collectionRef = collection(db, 'products')
+
+  const { setPostDetails } = useContext(PostContext)
+
+
+  const getProducts = async () => {
+    const data = await getDocs(collectionRef)
+    setProducts(data.docs.map((doc) =>
+      ({ ...doc.data(), id: doc.id })
+    ))
+  }
+
+  useEffect(() => {
+    getProducts()
+  },[])
+
 
   return (
     <div className="postParentDiv">
@@ -13,24 +38,32 @@ function Posts() {
           <span>View more</span>
         </div>
         <div className="cards">
-          <div
-            className="card"
-          >
-            <div className="favorite">
-              <Heart></Heart>
-            </div>
-            <div className="image">
-              <img src="../../../Images/R15V3.jpg" alt="" />
-            </div>
-            <div className="content">
-              <p className="rate">&#x20B9; 250000</p>
-              <span className="kilometer">Two Wheeler</span>
-              <p className="name"> YAMAHA R15V3</p>
-            </div>
-            <div className="date">
-              <span>Tue May 04 2021</span>
-            </div>
-          </div>
+          {products.map((data)=>{
+            return(<div
+              onClick={() => {
+                setPostDetails(data);
+                navigate('/view');
+              }}
+                className="card"
+            >
+              <div className="favorite">
+                <Heart></Heart>
+              </div>
+              <div className="image">
+                <img src={data.url} alt="" />
+              </div>
+              <div className="content">
+                <p className="rate">&#x20B9; {data.price}</p>
+                <span className="kilometer">{data.category}</span>
+                <p className="name"> {data.name}</p>
+              </div>
+              <div className="date">
+                <span>{data.createdAt}</span>
+              </div>
+            </div>)
+          })
+            
+          }
         </div>
       </div>
       <div className="recommendations">
