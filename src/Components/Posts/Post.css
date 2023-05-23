@@ -35,8 +35,8 @@
   margin-right: 15px;
   padding: 13px;
   max-width: 222px;
-  width: 222px;
-  height: 270px;
+  width: 270px;
+  height: 330px;
   display: inline-block;
   cursor: pointer;
 }
@@ -67,14 +67,17 @@
 }
 .card .content .kilometer {
   font-size: medium;
+  padding: 10px;
 }
 .card .content .name {
   font-size: small;
+  padding: 10px;
 }
 .card .date {
   display: flex;
   justify-content: flex-end;
   font-size: small;
+  padding: 10px;
 }
 
 .recommendations {

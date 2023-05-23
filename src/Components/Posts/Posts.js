@@ -9,26 +9,33 @@ import { PostContext } from '../../store/PostContext';
 
 function Posts() {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { db } = useContext(FirebaseContext)
-  const [products, setProducts] = useState([])
-  const collectionRef = collection(db, 'products')
+  const { db } = useContext(FirebaseContext);
+  const [products, setProducts] = useState([]);
+  const [newAdd, setNewAdd] = useState([]); // Corrected line
+  const collectionRef = collection(db, 'products');
 
-  const { setPostDetails } = useContext(PostContext)
-
+  const { setPostDetails } = useContext(PostContext);
 
   const getProducts = async () => {
-    const data = await getDocs(collectionRef)
-    setProducts(data.docs.map((doc) =>
-      ({ ...doc.data(), id: doc.id })
-    ))
-  }
+    const data = await getDocs(collectionRef);
+    setProducts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  const getNewAdded = async () => {
+    const data = await getDocs(collectionRef);
+    const sortedData = data.docs
+      .map((doc) => ({ ...doc.data(), id: doc.id }))
+      .sort((a, b) => b.dateAdded - a.dateAdded);
+
+    setNewAdd(sortedData);
+  };
 
   useEffect(() => {
-    getProducts()
-  },[])
-
+    getProducts();
+    getNewAdded();
+  }, []);
 
   return (
     <div className="postParentDiv">
@@ -71,22 +78,31 @@ function Posts() {
           <span>Fresh recommendations</span>
         </div>
         <div className="cards">
-          <div className="card">
-            <div className="favorite">
-              <Heart></Heart>
-            </div>
-            <div className="image">
-              <img src="../../../Images/R15V3.jpg" alt="" />
-            </div>
-            <div className="content">
-              <p className="rate">&#x20B9; 250000</p>
-              <span className="kilometer">Two Wheeler</span>
-              <p className="name"> YAMAHA R15V3</p>
-            </div>
-            <div className="date">
-              <span>10/5/2021</span>
-            </div>
-          </div>
+        {newAdd.map((data)=>{
+            return(<div
+              onClick={() => {
+                setPostDetails(data);
+                navigate('/view');
+              }}
+                className="card"
+            >
+              <div className="favorite">
+                <Heart></Heart>
+              </div>
+              <div className="image">
+                <img src={data.url} alt="" />
+              </div>
+              <div className="content">
+                <p className="rate">&#x20B9; {data.price}</p>
+                <span className="kilometer">{data.category}</span>
+                <p className="name"> {data.name}</p>
+              </div>
+              <div className="date">
+                <span>{data.createdAt}</span>
+              </div>
+            </div>)
+          })
+          }
         </div>
       </div>
     </div>

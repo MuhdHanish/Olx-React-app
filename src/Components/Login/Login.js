@@ -1,30 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Logo from '../../olx-logo.png';
 import './Login.css';
-import {HandelState} from '../../useForm'
-import { useNavigate } from 'react-router-dom';
+import { HandelState } from '../../useForm'
+import { Link, useNavigate } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 function Login() {
   const navigate = useNavigate()
-  const [state,setState] = HandelState({
-    email:"",
-    password:"",
+
+  const [errors, setError] = useState({})
+
+  const validation = {
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+  }
+
+  const [state, setState] = HandelState({
+    email: "",
+    password: "",
     returnSecureToken: true
   })
 
-  const HandleSubmit = (e) =>{
+  const HandleSubmit = (e) => {
     e.preventDefault()
-    try{
-     const auth = getAuth()
-     signInWithEmailAndPassword(auth,state.email,state.password).then((userData)=>{
-      navigate('/')
-     }).catch((err)=>{
-          console.log(err.code);
-     })
-    }catch(err){
-      console.log(err)
+    try {
+      const trimmedEmail = state.email.trim();
+      if (validation.email.test(trimmedEmail) === false) {
+        setError({ email: 'Invalid email' });
+        return;
+      }
+      const trimmedPassword = state.password.trim();
+      if (validation.password.test(trimmedPassword) === false) {
+        setError({ password: 'Invalid password' });
+        return;
+      }
+      const auth = getAuth()
+      signInWithEmailAndPassword(auth, state.email, state.password).then((userData) => {
+        navigate('/')
+      }).catch((err) => {
+        if(err.code==='auth/wrong-password')
+        setError({general:'wrong password'})
+        return
+      })
+    } catch (err) {
+      setError({general:'wrong password'})
     }
   }
 
@@ -44,7 +64,9 @@ function Login() {
             onChange={setState}
             defaultValue="John"
           />
+          
           <br />
+          {errors.email&&(<div style={{color:'red',marginTop:'5px',marginBottom:'5px'}}>{errors.email}</div>)}
           <label htmlFor="lname">Password</label>
           <br />
           <input
@@ -56,11 +78,13 @@ function Login() {
             name="password"
             defaultValue="Doe"
           />
+          {errors.password&&(<div style={{color:'red',marginTop:'5px',marginBottom:'5px'}}>{errors.password}</div>)}
           <br />
           <br />
           <button type='submit'>Login</button>
         </form>
-        <a href>Signup</a>
+        {errors.general&&(<div style={{color:'red',marginTop:'5px',marginBottom:'5px'}}>{errors.general}</div>)}
+        <Link style={{textDecoration:'none'}} to='/signup' >Signup</Link>
       </div>
     </div>
   );

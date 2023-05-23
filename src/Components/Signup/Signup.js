@@ -1,17 +1,25 @@
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Logo from '../../olx-logo.png';
 import './Signup.css';
 import { HandelState } from '../../useForm';
 import { FirebaseContext } from '../../store/Context'
-import { getAuth, createUserWithEmailAndPassword,updateProfile } from "firebase/auth";
-import { addDoc , collection } from 'firebase/firestore'
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { addDoc, collection } from 'firebase/firestore'
 
 
 export default function Signup() {
   const { db } = useContext(FirebaseContext)
   const navigate = useNavigate()
+  const [errors, setError] = useState({})
+  const validation = {
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+    phone: /^\d{10}$/,
+    name: /^[A-Za-z\s]+$/
+  };
+
   const [state, setState] = HandelState({
     name: "",
     email: "",
@@ -22,6 +30,27 @@ export default function Signup() {
 
   const HandleSubmit = (e) => {
     e.preventDefault();
+
+    const trimmedName = state.name.trim();
+    if (validation.name.test(trimmedName) === false) {
+      setError({ name: 'Invalid name' });
+      return;
+    }
+    const trimmedEmail = state.email.trim();
+    if (validation.email.test(trimmedEmail) === false) {
+      setError({ email: 'Invalid email' });
+      return;
+    }
+    const trimmedPhone = state.phone.trim();
+    if (validation.phone.test(trimmedPhone) === false) {
+      setError({ phone: 'Invalid phone' });
+      return;
+    }
+    const trimmedPassword = state.password.trim();
+    if (validation.password.test(trimmedPassword) === false) {
+      setError({ password: 'Invalid password' });
+      return;
+    }
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, state.email, state.password)
       .then((userCredential) => {
@@ -30,22 +59,25 @@ export default function Signup() {
           displayName: state.name
         })
           .then(() => {
-            addDoc(collection(db,'users'),{
-              uid:user.uid,
-              name:state.name,
-              email:state.email,
-              phone:state.phone,
-              password:state.password
-            }).then(()=>navigate('/login'))
+            addDoc(collection(db, 'users'), {
+              uid: user.uid,
+              name: state.name,
+              email: state.email,
+              phone: state.phone,
+              password: state.password
+            }).then(() => navigate('/login'))
           })
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+        if (error.code === 'auth/email-already-in-use') {
+          setError({ general: 'This email already exitsted' })
+        }
+        else {
+          setError({ general: error.message })
+        }
       });
   };
-  
+
 
 
   return (
@@ -65,6 +97,7 @@ export default function Signup() {
             defaultValue="John"
           />
           <br />
+          {errors.name && (<div style={{ color: 'red', marginTop: '5px', marginBottom: '5px' }}>{errors.name}</div>)}
           <label htmlFor="fname">Email</label>
           <br />
           <input
@@ -77,6 +110,7 @@ export default function Signup() {
             defaultValue="John"
           />
           <br />
+          {errors.email && (<div style={{ color: 'red', marginTop: '5px', marginBottom: '5px' }}>{errors.email}</div>)}
           <label htmlFor="lname">Phone</label>
           <br />
           <input
@@ -88,7 +122,9 @@ export default function Signup() {
             onChange={setState}
             defaultValue="Doe"
           />
+
           <br />
+          {errors.phone && (<div style={{ color: 'red', marginTop: '5px', marginBottom: '5px' }}>{errors.phone}</div>)}
           <label htmlFor="lname">Password</label>
           <br />
           <input
@@ -101,10 +137,12 @@ export default function Signup() {
             defaultValue="Doe"
           />
           <br />
+          {errors.password && (<div style={{ color: 'red', marginTop: '5px', marginBottom: '5px' }}>{errors.password}</div>)}
           <br />
+          {errors.general && (<div style={{ color: 'red', marginTop: '5px', marginBottom: '5px' }}>{errors.general}</div>)}
           <button type='submit'>Signup</button>
         </form>
-        <a href>Login</a>
+        <Link style={{textDecoration:'none'}} to='/login'>Login</Link>
       </div>
     </div>
   );
