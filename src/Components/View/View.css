@@ -1,51 +1,81 @@
 .viewParentDiv {
-  padding-top: 10em;
-  padding-left: 10em;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
 }
+
 .viewParentDiv .imageShowDiv {
-  padding: 16px;
-  width: 50vw;
+  padding: 1em;
+  flex: 1;
 }
+
 .viewParentDiv .imageShowDiv img {
-  width: 500px;
-  height: 500px;
-}
-
-.viewParentDiv .rightSection {
-  padding: 16px;
-  margin-top: 3em;
-  width: 30vw;
-}
-
-.viewParentDiv .rightSection .productDetails :first-child {
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: #002f34;
-  font-size: 34px;
-  line-height: 32px;
-  margin-bottom: 20px;
-}
-
-.viewParentDiv .rightSection .productDetails {
-  border: 1px solid black;
-  padding: 6px;
-  border-radius: 6px;
-  margin-bottom: 2em;
   width: 100%;
+  height: auto;
+  max-width: 500px;
+  max-height: 500px;
+  margin-top: 100px;
 }
 
-.viewParentDiv .rightSection .contactDetails {
-  border: 1px solid black;
-  padding: 6px;
-  border-radius: 6px;
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  padding: 2em;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  margin-top: 100px;
+  margin-right: 100px;
 }
 
-.viewParentDiv .rightSection .contactDetails :first-child {
-  font-size: 20px;
-  line-height: 24px;
-  font-weight: 700;
+
+.productDetails {
+  margin-bottom: 2em;
+}
+
+.productDetails h2,
+.sellerDetails h2 {
+  font-size: 24px;
   color: #002f34;
-  font-weight: 400;
-  padding: 0;
+  margin-bottom: 1em;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.name {
+  font-size: 20px;
+  color: #555;
+}
+
+.category,
+.createdAt {
+  font-size: 16px;
+  color: #777;
+}
+
+.sellerDetails {
+  margin-top: 2em;
+}
+
+.sellerDetails p {
+  margin-bottom: 0.5em;
+  color: #333;
+}
+
+.sellerName {
+  font-size: 18px;
+  font-weight: bold;
+  color: #002f34;
+}
+
+.sellerEmail,
+.sellerPhone {
+  font-size: 16px;
+  color: #555;
 }

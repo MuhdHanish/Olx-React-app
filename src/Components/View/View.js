@@ -41,22 +41,18 @@ function View() {
       </div>
       <div className="rightSection">
         <div className="productDetails">
-          <p>
-            <u>productDetails</u>
-          </p>
-          <p>&#x20B9; {postDetails.price}</p>
-          <span>{postDetails.name}</span>
-          <p>{postDetails.category}</p>
-          <span>{postDetails.createdAt}</span>
+          <h2>Product Details</h2>
+          <p className="price">&#x20B9; {postDetails.price}</p>
+          <h3 className="name">{postDetails.name}</h3>
+          <p className="category">{postDetails.category}</p>
+          <p className="createdAt">Created at: {postDetails.createdAt}</p>
         </div>
         {userDetails && (
-          <div className="productDetails">
-            <p>
-              <u>Seller Information</u>
-            </p>
-            <p>{userDetails?.name}</p>
-            <p>{userDetails?.email}</p>
-            <p>{userDetails?.phone}</p>
+          <div className="sellerDetails">
+            <h2>Seller Information</h2>
+            <p className="sellerName">{userDetails?.name}</p>
+            <p className="sellerEmail">{userDetails?.email}</p>
+            <p className="sellerPhone">{userDetails?.phone}</p>
           </div>
         )}
       </div>
